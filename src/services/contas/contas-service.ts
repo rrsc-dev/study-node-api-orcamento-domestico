@@ -1,5 +1,6 @@
 import { getTodasContas, cadastrarConta } from "../../repositories/contas/contas-repository";
 import { ContaModel } from "../../models/conta-model";
+import { getContaById } from "../../repositories/contas/contas-repository";
 
 export const getTodasContasService = async (): Promise<ContaModel[]> => {
     const data = await getTodasContas();
@@ -15,3 +16,26 @@ export const cadastrarContaService = async (conta: ContaModel): Promise<ContaMod
     const novaConta = await cadastrarConta(conta);
     return novaConta;
 };
+
+export const getContaByIdService = async (contaId: string | undefined): Promise<ContaModel> => {
+    const match = contaId?.match(/[?&]id=(\d+)/);
+    const idParam = match ? match[1] : null;
+
+    if (!idParam) {
+        throw new Error("ID não fornecido na URL");
+    }
+
+    const id = parseInt(idParam, 10);
+
+    if (isNaN(id)) {
+        throw new Error("ID inválido");
+    }
+
+    const data = await getContaById(id);
+
+    if (!data) {
+        throw new Error("Conta não encontrada");
+    }
+
+    return data;
+}
