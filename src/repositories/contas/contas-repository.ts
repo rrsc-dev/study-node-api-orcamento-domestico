@@ -15,3 +15,12 @@ export const cadastrarConta = async (conta: ContaModel): Promise<ContaModel> => 
     const { rows } = await pool.query<ContaModel>(query, values);
     return rows[0];
 }
+
+export const getContaById = async (id: number): Promise<ContaModel> => {
+    const query = `SELECT * FROM contas WHERE id = ($1)`;
+    const values = [id];
+
+    const { rows } = await pool.query<ContaModel>(query, values);
+
+    return rows[0];
+}
