@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { cadastrarContaService, getTodasContasService } from "../../services/contas/contas-service";
 import { getBody } from "../../utils/body-parser";
 import { ContaModel } from "../../models/conta-model";
+import { getContaByIdService } from "../../services/contas/contas-service";
 
 export const getTodasContas = async (req: IncomingMessage, res: ServerResponse) => {
     
@@ -30,3 +31,15 @@ export const cadastrarConta = async (req: IncomingMessage, res: ServerResponse) 
         res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
     }
 };
+
+export const getContaById = async (req: IncomingMessage, res: ServerResponse) => {
+    try {
+        const conta: ContaModel = await getContaByIdService(req.url);
+
+        res.writeHead(200, {'content-type': 'application/json' });
+        res.end(JSON.stringify(conta));
+    } catch (error: any) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
+    }
+}
