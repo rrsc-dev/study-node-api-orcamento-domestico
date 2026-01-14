@@ -24,3 +24,33 @@ export const getContaById = async (id: number): Promise<ContaModel> => {
 
     return rows[0];
 }
+
+export const editarContaRepository = async (id: number, nome: string): Promise<ContaModel> => {
+    const query = 'UPDATE contas SET nome = $1 WHERE id = $2 RETURNING *';
+
+    const values = [nome, id];
+
+    const { rows } = await pool.query<ContaModel>(query, values);
+
+    return rows[0];
+}
+
+export const excluirContaRepository = async (id: number): Promise<void> => {
+    const query = 'DELETE FROM contas WHERE id = $1';
+    await pool.query(query, [id]);
+}
+
+export const desativarContaRepository = async (id: number): Promise<ContaModel> => {
+    const query = 'UPDATE contas SET ativo = false WHERE id = $1 RETURNING *';
+    const { rows } = await pool.query<ContaModel>(query, [id]);
+
+    return rows[0];
+}
+
+export const atualizarSaldoRepository = async (id: number, novoSaldo: number): Promise<ContaModel> => {
+    const query = 'UPDATE contas SET saldo = $1 WHERE id = $2 RETURNING *';
+    const values = [novoSaldo, id];
+    const { rows } = await pool.query<ContaModel>(query, values);
+
+    return rows[0];
+}
