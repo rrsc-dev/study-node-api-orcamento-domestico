@@ -1,4 +1,4 @@
-import { getTodasContas, cadastrarConta } from "../../repositories/contas/contas-repository";
+import { getTodasContas, cadastrarConta, editarContaRepository } from "../../repositories/contas/contas-repository";
 import { ContaModel } from "../../models/conta-model";
 import { getContaById } from "../../repositories/contas/contas-repository";
 
@@ -16,6 +16,20 @@ export const cadastrarContaService = async (conta: ContaModel): Promise<ContaMod
     const novaConta = await cadastrarConta(conta);
     return novaConta;
 };
+
+export const editarContaService = async (contaId: string | undefined, body: any): Promise<ContaModel> => {
+    const match = contaId?.match(/[?&]id=(\d+)/);
+    const idParam = match ? match[1] : null;
+
+    if (!idParam) {
+        throw new Error("ID não fornecido na URL");
+    }
+
+    const id = parseInt(idParam, 10);
+    const contaAtualizada = await editarContaRepository(id, body.nome);
+
+    return contaAtualizada;
+}
 
 export const getContaByIdService = async (contaId: string | undefined): Promise<ContaModel> => {
     const match = contaId?.match(/[?&]id=(\d+)/);
