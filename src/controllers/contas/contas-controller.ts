@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { cadastrarContaService, getTodasContasService } from "../../services/contas/contas-service";
+import { cadastrarContaService, editarContaService, getTodasContasService } from "../../services/contas/contas-service";
 import { getBody } from "../../utils/body-parser";
 import { ContaModel } from "../../models/conta-model";
 import { getContaByIdService } from "../../services/contas/contas-service";
@@ -38,6 +38,19 @@ export const getContaById = async (req: IncomingMessage, res: ServerResponse) =>
 
         res.writeHead(200, {'content-type': 'application/json' });
         res.end(JSON.stringify(conta));
+    } catch (error: any) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
+    }
+}
+
+export const editarContaController = async (req: IncomingMessage, res: ServerResponse) => {
+    try {
+        const body = await getBody(req) as ContaModel;
+        const conta: ContaModel = await editarContaService(req.url, body)
+
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(conta));;
     } catch (error: any) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
