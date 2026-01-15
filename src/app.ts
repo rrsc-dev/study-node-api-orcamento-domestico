@@ -2,7 +2,7 @@ import * as http from 'http';
 import pool from './db';
 import { HttpMethod } from './utils/http-methods';
 import { Routes } from './router/routes';
-import { cadastrarConta, editarContaController, excluirConta, getContaById, getTodasContas } from './controllers/contas/contas-controller';
+import { atualizarSaldoController, cadastrarConta, desativarContaController, editarContaController, excluirConta, getContaById, getTodasContas } from './controllers/contas/contas-controller';
 
 export const app = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const baseUrl = req.url?.split("?")[0];
@@ -25,5 +25,13 @@ export const app = async (req: http.IncomingMessage, res: http.ServerResponse) =
 
     if (req.method === HttpMethod.DELETE && baseUrl === Routes.EXCLUIR_CONTA) {
         await excluirConta(req, res);
+    }
+
+    if (req.method === HttpMethod.PATCH && baseUrl === Routes.ATUALIZAR_SALDO) {
+        await atualizarSaldoController(req, res);
+    }
+
+    if (req.method === HttpMethod.PATCH && baseUrl === Routes.DESATIVAR_CONTA) {
+        await desativarContaController(req, res);
     }
 }

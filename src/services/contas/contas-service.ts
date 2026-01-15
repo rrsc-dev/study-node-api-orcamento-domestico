@@ -1,4 +1,4 @@
-import { getTodasContas, cadastrarConta, editarContaRepository, excluirContaRepository } from "../../repositories/contas/contas-repository";
+import { getTodasContas, cadastrarConta, editarContaRepository, excluirContaRepository, desativarContaRepository, atualizarSaldoRepository } from "../../repositories/contas/contas-repository";
 import { ContaModel } from "../../models/conta-model";
 import { getContaById } from "../../repositories/contas/contas-repository";
 
@@ -65,4 +65,33 @@ export const excluirContaService = async (contaId: string | undefined): Promise<
     const id = parseInt(idParam, 10);
 
     await excluirContaRepository(id);
+}
+
+export const desativarContaService = async (contaId: string | undefined): Promise<ContaModel> => {
+    const match = contaId?.match(/[?&]id=(\d+)/);
+    const idParam = match ? match[1] : null;
+
+    if (!idParam) {
+        throw new Error("ID não fornecido na URL");
+    }
+
+    const id = parseInt(idParam, 10);
+
+    const contaAtualizada = await desativarContaRepository(id);
+
+    return contaAtualizada;
+}
+
+export const atualizarSaldoService = async (contaId: string | undefined, body: any): Promise<ContaModel> => {
+    const match = contaId?.match(/[?&]id=(\d+)/);
+    const idParam = match ? match[1] : null;
+
+    if (!idParam) {
+        throw new Error("ID não fornecido na URL");
+    }
+
+    const id = parseInt(idParam, 10);
+    const contaAtualizada = await atualizarSaldoRepository(id, body.saldo);
+
+    return contaAtualizada;
 }

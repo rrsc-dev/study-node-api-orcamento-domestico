@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { cadastrarContaService, editarContaService, excluirContaService, getTodasContasService } from "../../services/contas/contas-service";
+import { atualizarSaldoService, cadastrarContaService, desativarContaService, editarContaService, excluirContaService, getTodasContasService } from "../../services/contas/contas-service";
 import { getBody } from "../../utils/body-parser";
 import { ContaModel } from "../../models/conta-model";
 import { getContaByIdService } from "../../services/contas/contas-service";
@@ -50,7 +50,7 @@ export const editarContaController = async (req: IncomingMessage, res: ServerRes
         const conta: ContaModel = await editarContaService(req.url, body)
 
         res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(conta));;
+        res.end(JSON.stringify(conta));
     } catch (error: any) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
@@ -62,6 +62,31 @@ export const excluirConta = async (req: IncomingMessage, res: ServerResponse) =>
         await excluirContaService(req.url);
         res.writeHead(204); // No Content (Sucesso sem corpo)
         res.end();
+    } catch (error: any) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
+    }
+}
+
+export const atualizarSaldoController = async (req: IncomingMessage, res: ServerResponse) => {
+    try {
+        const body = await getBody(req) as ContaModel;
+        const conta: ContaModel = await atualizarSaldoService(req.url, body);
+
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(conta));;
+    } catch (error: any) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
+    }
+}
+
+export const desativarContaController = async (req: IncomingMessage, res: ServerResponse) => {
+    try {
+        const conta: ContaModel = await desativarContaService(req.url);
+
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(conta));
     } catch (error: any) {
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));

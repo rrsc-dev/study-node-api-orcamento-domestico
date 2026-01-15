@@ -9,8 +9,8 @@ export const getTodasContas = async (): Promise<ContaModel[]> => {
 }
 
 export const cadastrarConta = async (conta: ContaModel): Promise<ContaModel> => {
-    const query = `INSERT INTO contas (nome) VALUES ($1) RETURNING *`;
-    const values = [conta.nome];
+    const query = `INSERT INTO contas (nome, saldo, ativo) VALUES ($1, $2, $3) RETURNING *`;
+    const values = [conta.nome, conta.saldo, conta.ativo];
 
     const { rows } = await pool.query<ContaModel>(query, values);
     return rows[0];
