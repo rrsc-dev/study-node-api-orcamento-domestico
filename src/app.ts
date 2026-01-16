@@ -2,7 +2,7 @@ import * as http from 'http';
 import pool from './db';
 import { HttpMethod } from './utils/http-methods';
 import { Routes } from './router/routes';
-import { atualizarSaldoController, cadastrarConta, desativarContaController, editarContaController, excluirConta, getContaById, getTodasContas } from './controllers/contas/contas-controller';
+import { atualizarSaldoController, cadastrarConta, desativarContaController, editarContaController, excluirConta, getContaById, getDetalhesConta, getTodasContas } from './controllers/contas/contas-controller';
 import { cadastrarOperacao, getTodasOperacoes } from './controllers/operacoes/operacoes-controller';
 
 export const app = async (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -14,6 +14,10 @@ export const app = async (req: http.IncomingMessage, res: http.ServerResponse) =
 
     if (req.method === HttpMethod.GET && baseUrl === Routes.GET_CONTA_BY_ID) {
         await getContaById(req, res);
+    }
+
+    if (req.method === HttpMethod.GET && baseUrl === Routes.GET_DETALHES_CONTA) {
+        await getDetalhesConta(req, res);
     }
 
     if (req.method === HttpMethod.POST && baseUrl === Routes.CADASTRAR_CONTA){
