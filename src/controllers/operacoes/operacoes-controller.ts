@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { OperacaoModel } from "../../models/operacao-model";
 import { getBody } from "../../utils/body-parser";
-import { cadastrarOperacaoService, getOperacaoByIdService, getTodasOperacoesService } from "../../services/operacoes/operacoes-service";
+import { cadastrarOperacaoService, excluirOperacaoService, getOperacaoByIdService, getTodasOperacoesService } from "../../services/operacoes/operacoes-service";
 
 export const getTodasOperacoes = async (req: IncomingMessage, res: ServerResponse) => {
     try {
@@ -44,7 +44,14 @@ export const getOperacaoById = async (req: IncomingMessage, res: ServerResponse)
 }
 
 export const excluirOperacao = async (req: IncomingMessage, res: ServerResponse) => {
-    // TODO
+    try {
+        await excluirOperacaoService(req.url);
+        res.writeHead(204); // No Content (Sucesso sem corpo)
+        res.end();
+    } catch (error: any) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
+    }
 }
 
 export const alterarStatusOperacao = async (req: IncomingMessage, res: ServerResponse) => {
