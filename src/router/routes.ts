@@ -5,5 +5,7 @@ export enum Routes {
     EDITAR_CONTA = '/api/contas/editarConta',
     EXCLUIR_CONTA = '/api/contas/excluirConta',
     DESATIVAR_CONTA = '/api/contas/desativarConta',
-    ATUALIZAR_SALDO = '/api/contas/atualizarConta'
+    ATUALIZAR_SALDO = '/api/contas/atualizarConta',
+
+    CADASTRAR_OPERACAO = '/api/operacoes/cadastrarOperacao',
 }
