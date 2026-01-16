@@ -8,4 +8,8 @@ export enum Routes {
     ATUALIZAR_SALDO = '/api/contas/atualizarConta',
 
     CADASTRAR_OPERACAO = '/api/operacoes/cadastrarOperacao',
+    LISTA_OPERACOES = '/api/operacoes/getTodasOperacoes',
+    GET_OPERACAO_BY_ID = '/api/operacoes/getOperacaoById',
+    EDITAR_OPERACAO = '/api/operacoes/editarOperacao',
+    EXCLUIR_OPERACAO ='/api/operacoes/excluirOperacao',
 }
