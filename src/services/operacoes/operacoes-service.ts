@@ -1,5 +1,5 @@
 import { OperacaoModel } from "../../models/operacao-model";
-import { cadastrarOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
+import { alterarStatusOperacao, cadastrarOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
 
 export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
     if (!operacao.tipo && !operacao.valor) {
@@ -18,7 +18,6 @@ export const getTodasOperacoesService = async (): Promise<OperacaoModel[]> => {
 
 export const getOperacaoByIdService = async (operacaoId: string | undefined): Promise<OperacaoModel> => {
     const match = operacaoId?.match(/[?&]id=(\d+)/);
-
     const idParam = match ? match[1] : null;
 
     if (!idParam) {
@@ -38,4 +37,38 @@ export const getOperacaoByIdService = async (operacaoId: string | undefined): Pr
     }
 
     return data;
+}
+
+export const excluirOperacaoService = async(operacaoId: string | undefined): Promise<void> => {
+    const match = operacaoId?.match(/[?&]id=(\d+)/);
+    const idParam = match ? match[1] : null;
+
+    if (!idParam) {
+        throw new Error("ID não fornecido");
+    }
+
+    const id = parseInt(idParam,10);
+
+    if (isNaN(id)) {
+        throw new Error("ID inválido");
+    }
+
+    const data = await getOperacaoById(id);
+}
+
+export const alterarStatusOperacaoService = async(operacaoId: string | undefined, status: number): Promise<void> => {
+     const match = operacaoId?.match(/[?&]id=(\d+)/);
+    const idParam = match ? match[1] : null;
+
+    if (!idParam) {
+        throw new Error("ID não fornecido");
+    }
+
+    const id = parseInt(idParam,10);
+
+    if (isNaN(id)) {
+        throw new Error("ID inválido");
+    }
+
+    const data = await alterarStatusOperacao(id, status);
 }
