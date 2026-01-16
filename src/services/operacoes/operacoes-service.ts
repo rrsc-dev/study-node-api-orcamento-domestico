@@ -57,7 +57,7 @@ export const excluirOperacaoService = async(operacaoId: string | undefined): Pro
     const data = await getOperacaoById(id);
 }
 
-export const alterarStatusOperacaoService = async(operacaoId: string | undefined, status: number): Promise<void> => {
+export const alterarStatusOperacaoService = async(operacaoId: string | undefined, body: any): Promise<OperacaoModel> => {
     const match = operacaoId?.match(/[?&]id=(\d+)/);
     const idParam = match ? match[1] : null;
 
@@ -66,12 +66,15 @@ export const alterarStatusOperacaoService = async(operacaoId: string | undefined
     }
 
     const id = parseInt(idParam,10);
+    const statusInt = parseInt(body.status,10);
 
-    if (isNaN(id)) {
-        throw new Error("ID inválido");
+    if (isNaN(id) || isNaN(statusInt)) {
+        throw new Error("ID ou Status inválido");
     }
 
-    const data = await alterarStatusOperacao(id, status);
+    const data = await alterarStatusOperacao(id, statusInt);
+
+    return data;
 }
 
 export const editarOperacaoService = async(operacaoId: string | undefined, chave: string, novoValor: string) => {

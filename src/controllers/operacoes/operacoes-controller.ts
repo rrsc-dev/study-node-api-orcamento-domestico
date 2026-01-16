@@ -1,7 +1,8 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { OperacaoModel } from "../../models/operacao-model";
 import { getBody } from "../../utils/body-parser";
-import { cadastrarOperacaoService, excluirOperacaoService, getOperacaoByIdService, getTodasOperacoesService } from "../../services/operacoes/operacoes-service";
+import { alterarStatusOperacaoService, cadastrarOperacaoService, excluirOperacaoService, getOperacaoByIdService, getTodasOperacoesService } from "../../services/operacoes/operacoes-service";
+import { atualizarSaldoService } from "../../services/contas/contas-service";
 
 export const getTodasOperacoes = async (req: IncomingMessage, res: ServerResponse) => {
     try {
@@ -55,7 +56,15 @@ export const excluirOperacao = async (req: IncomingMessage, res: ServerResponse)
 }
 
 export const alterarStatusOperacao = async (req: IncomingMessage, res: ServerResponse) => {
-    // TODO
+    try {
+        const body = await getBody(req) as OperacaoModel;
+        const operacao: OperacaoModel = await alterarStatusOperacaoService(req.url, body);
+
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(operacao));;
+    } catch (error: any) {
+
+    }
 }
 
 export const editarOperacao = async (req: IncomingMessage, res: ServerResponse) => {
