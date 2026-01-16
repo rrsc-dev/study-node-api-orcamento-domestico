@@ -1,9 +1,13 @@
 import pool from "../../db";
 import { OperacaoModel } from "../../models/operacao-model";
 
-// export const getTodasOperacoes = async (): Promise<OperacaoModel[]> => {
-//     // TODO
-// }
+export const getTodasOperacoes = async (): Promise<OperacaoModel[]> => {
+    const query = `SELECT * FROM operacoes ORDER BY id DESC`;
+
+    const { rows } = await pool.query<OperacaoModel>(query);
+
+    return rows;
+}
 
 // export const getOperacaoById = async (id: number): Promise<OperacaoModel> => {
 //     // TODO
