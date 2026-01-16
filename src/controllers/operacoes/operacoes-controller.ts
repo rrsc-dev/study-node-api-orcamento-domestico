@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { OperacaoModel } from "../../models/operacao-model";
 import { getBody } from "../../utils/body-parser";
-import { cadastrarOperacaoService, getTodasOperacoesService } from "../../services/operacoes/operacoes-service";
+import { cadastrarOperacaoService, getOperacaoByIdService, getTodasOperacoesService } from "../../services/operacoes/operacoes-service";
 
 export const getTodasOperacoes = async (req: IncomingMessage, res: ServerResponse) => {
     try {
@@ -33,7 +33,14 @@ export const cadastrarOperacao = async (req: IncomingMessage, res: ServerRespons
 }
 
 export const getOperacaoById = async (req: IncomingMessage, res: ServerResponse) => {
-    // TODO
+    try {
+        const operacao: OperacaoModel = await getOperacaoByIdService(req.url);
+        res.writeHead(200, {'content-type': 'application/json' });
+        res.end(JSON.stringify(operacao));
+    } catch (error: any) {
+        res.writeHead(400, {'content-type': 'application/json'});
+        res.end(JSON.stringify({ message: error.message || 'Erro inesperado' }));
+    }
 }
 
 export const excluirOperacao = async (req: IncomingMessage, res: ServerResponse) => {
