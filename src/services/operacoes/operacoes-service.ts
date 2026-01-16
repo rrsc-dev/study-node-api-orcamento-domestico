@@ -1,5 +1,6 @@
 import { OperacaoModel } from "../../models/operacao-model";
-import { alterarStatusOperacao, cadastrarOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
+import { editarContaRepository } from "../../repositories/contas/contas-repository";
+import { alterarStatusOperacao, cadastrarOperacao, editarOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
 
 export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
     if (!operacao.tipo && !operacao.valor) {
@@ -86,4 +87,8 @@ export const editarOperacaoService = async(operacaoId: string | undefined, chave
     if (isNaN(id)) {
         throw new Error("ID inválido");
     }
+
+    const operacaoAtualizada = await editarOperacao(id, chave, novoValor);
+
+    return operacaoAtualizada;
 }
