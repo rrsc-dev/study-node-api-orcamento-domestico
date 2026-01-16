@@ -31,3 +31,19 @@ export const cadastrarOperacao = async (req: IncomingMessage, res: ServerRespons
         res.end(JSON.stringify({ message: 'Erro ao cadastrar operação' }));
     }
 }
+
+export const getOperacaoById = async (req: IncomingMessage, res: ServerResponse) => {
+    // TODO
+}
+
+export const excluirOperacao = async (req: IncomingMessage, res: ServerResponse) => {
+    // TODO
+}
+
+export const alterarStatusOperacao = async (req: IncomingMessage, res: ServerResponse) => {
+    // TODO
+}
+
+export const editarOperacao = async (req: IncomingMessage, res: ServerResponse) => {
+    // TODO
+}
