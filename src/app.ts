@@ -3,7 +3,7 @@ import pool from './db';
 import { HttpMethod } from './utils/http-methods';
 import { Routes } from './router/routes';
 import { atualizarSaldoController, cadastrarConta, desativarContaController, editarContaController, excluirConta, getContaById, getTodasContas } from './controllers/contas/contas-controller';
-import { cadastrarOperacao } from './controllers/operacoes/operacoes-controller';
+import { cadastrarOperacao, getTodasOperacoes } from './controllers/operacoes/operacoes-controller';
 
 export const app = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const baseUrl = req.url?.split("?")[0];
@@ -39,5 +39,9 @@ export const app = async (req: http.IncomingMessage, res: http.ServerResponse) =
     // Operações
     if (req.method === HttpMethod.POST && baseUrl === Routes.CADASTRAR_OPERACAO) {
         await cadastrarOperacao(req, res);
+    }
+
+    if (req.method === HttpMethod.GET && baseUrl === Routes.LISTA_OPERACOES) {
+        await getTodasOperacoes(req, res);
     }
 }
