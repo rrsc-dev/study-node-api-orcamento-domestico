@@ -9,9 +9,15 @@ export const getTodasOperacoes = async (): Promise<OperacaoModel[]> => {
     return rows;
 }
 
-// export const getOperacaoById = async (id: number): Promise<OperacaoModel> => {
-//     // TODO
-// }
+export const getOperacaoById = async (id: number): Promise<OperacaoModel> => {
+    const query = `SELECT * FROM operacoes WHERE id = ($1)`;
+
+    const values = [id];
+
+    const { rows } = await pool.query<OperacaoModel>(query, values);
+
+    return rows[0];
+}
 
 // export const excluirOperacao = async (id: number): Promise<void> => {
 //     // TODO
