@@ -1,0 +1,11 @@
+import pool from "../../db";
+import { CategoriaModel } from "../../models/categoria-model";
+
+export const cadastrarCategoria = async (categoria: CategoriaModel): Promise<CategoriaModel> => {
+    const query = `INSERT INTO categorias (nome_categoria, status, uso) VALUES () RETURNING *`;
+    const values = [categoria.nomeCategoria, categoria.status, categoria.uso];
+
+    const { rows } = await pool.query<CategoriaModel>(query, values);
+
+    return rows[0];
+}
