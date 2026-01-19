@@ -1,6 +1,7 @@
+import { ContaModel } from "../../models/conta-model";
 import { OperacaoModel } from "../../models/operacao-model";
-import { editarContaRepository } from "../../repositories/contas/contas-repository";
-import { alterarStatusOperacao, cadastrarOperacao, editarOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
+import { atualizarSaldoRepository, getContaById } from "../../repositories/contas/contas-repository";
+import { alterarStatusOperacao, cadastrarOperacao, editarOperacao, excluirOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
 
 export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
     if (!operacao.tipo && !operacao.valor) {
@@ -8,6 +9,51 @@ export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise
     }
 
     const novaOperacao = await cadastrarOperacao(operacao);
+    console.log(novaOperacao);
+    if (novaOperacao) {
+        // Pegar o id da conta
+        const idConta = novaOperacao.conta_id;
+
+        // Buscar conta
+        const conta: ContaModel = await getContaById(idConta);
+
+        if(conta) {
+            console.log('conta encontrada');
+
+            // verificar tipo de operação
+            if (novaOperacao.tipo === 1) {
+                // Receita
+                let saldoConta = conta.saldo
+
+                if (isNaN(saldoConta) || saldoConta === null) {
+                    saldoConta = 0;
+                }
+
+                const novoSaldo: number = saldoConta + novaOperacao.valor;
+
+                await atualizarSaldoRepository(idConta, novoSaldo);
+
+                return novaOperacao;
+            } else if (novaOperacao.tipo === 2) {
+                // Despesa
+                //verifica saldo
+                if (conta.saldo <= 0) {
+                    return novaOperacao;
+                } else{
+                    const novoSaldo: number = conta.saldo - novaOperacao.valor;
+
+                    await atualizarSaldoRepository(idConta, novoSaldo);
+
+                    return novaOperacao;
+                }
+            } else {
+                console.log('tipo de operação não reconhecidos');
+            }
+        } else {
+            await excluirOperacao(novaOperacao.id);
+        }
+    }
+
     return novaOperacao;
 }
 
