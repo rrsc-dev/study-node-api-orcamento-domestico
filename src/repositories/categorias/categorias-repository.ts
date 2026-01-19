@@ -32,3 +32,9 @@ export const excluirCategoria = async (id: number): Promise<void> => {
     await pool.query(query, [id]);
 }
 
+export const desativarCategoria = async (id: number): Promise<CategoriaModel> => {
+    const query = 'UPDATE categorias SET status = false WHERE id = $1 RETURNING *';
+    const { rows } = await pool.query<CategoriaModel>(query, [id]);
+
+    return rows[0];
+}
