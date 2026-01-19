@@ -20,16 +20,13 @@ export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise
         if(conta) {
             console.log('conta encontrada');
 
+            const saldoAtual = Number(conta.saldo) || 0;
+            const valorOperacao = Number(novaOperacao.valor);
+
             // verificar tipo de operação
             if (novaOperacao.tipo === 1) {
                 // Receita
-                let saldoConta = conta.saldo
-
-                if (isNaN(saldoConta) || saldoConta === null) {
-                    saldoConta = 0;
-                }
-
-                const novoSaldo: number = saldoConta + novaOperacao.valor;
+                const novoSaldo: number = saldoAtual + valorOperacao;
 
                 await atualizarSaldoRepository(idConta, novoSaldo);
 
@@ -40,7 +37,7 @@ export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise
                 if (conta.saldo <= 0) {
                     return novaOperacao;
                 } else{
-                    const novoSaldo: number = conta.saldo - novaOperacao.valor;
+                    const novoSaldo: number = saldoAtual - valorOperacao;
 
                     await atualizarSaldoRepository(idConta, novoSaldo);
 
