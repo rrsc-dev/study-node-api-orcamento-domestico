@@ -9,3 +9,11 @@ export const cadastrarCategoria = async (categoria: CategoriaModel): Promise<Cat
 
     return rows[0];
 }
+
+export const getTodasCategorias = async (): Promise<CategoriaModel[]> => {
+    const query = `SELECT * FROM categorias ORDER BY id ASC`;
+
+    const { rows } = await pool.query<CategoriaModel>(query);
+
+    return rows;
+}
