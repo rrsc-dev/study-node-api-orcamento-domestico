@@ -1,4 +1,3 @@
-import * as http from 'http';
 import pool from '../../db';
 import { ContaModel } from '../../models/conta-model';
 
