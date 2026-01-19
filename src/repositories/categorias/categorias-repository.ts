@@ -17,3 +17,12 @@ export const getTodasCategorias = async (): Promise<CategoriaModel[]> => {
 
     return rows;
 }
+
+export const getCategoriaById = async (id: number): Promise<CategoriaModel> => {
+    const query = `SELECT * FROM categorias WHERE id = ($1)`;
+    const values = [id];
+
+    const { rows } = await pool.query<CategoriaModel>(query, values);
+
+    return rows[0];
+}
