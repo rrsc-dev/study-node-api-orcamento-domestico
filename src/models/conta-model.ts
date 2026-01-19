@@ -3,4 +3,5 @@ export interface ContaModel {
     nome: string;
     saldo: number;
     ativo: boolean;
+    created_at?: string;
 }
