@@ -26,3 +26,9 @@ export const getCategoriaById = async (id: number): Promise<CategoriaModel> => {
 
     return rows[0];
 }
+
+export const excluirCategoria = async (id: number): Promise<void> => {
+    const query = 'DELETE FROM categorias WHERE id = $1';
+    await pool.query(query, [id]);
+}
+
