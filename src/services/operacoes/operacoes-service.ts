@@ -2,6 +2,7 @@ import { ContaModel } from "../../models/conta-model";
 import { OperacaoModel, TipoOperacao } from "../../models/operacao-model";
 import { atualizarSaldoRepository, getContaById } from "../../repositories/contas/contas-repository";
 import { alterarStatusOperacao, cadastrarOperacao, editarOperacao, excluirOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
+import { getIdParamsMatch } from "../../utils/params-regex";
 
 export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
     if (!operacao.tipo && !operacao.valor) {
@@ -57,8 +58,7 @@ export const getTodasOperacoesService = async (): Promise<OperacaoModel[]> => {
 }
 
 export const getOperacaoByIdService = async (operacaoId: string | undefined): Promise<OperacaoModel> => {
-    const match = operacaoId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(operacaoId);
 
     if (!idParam) {
         throw new Error("ID não fornecido");
@@ -80,8 +80,7 @@ export const getOperacaoByIdService = async (operacaoId: string | undefined): Pr
 }
 
 export const excluirOperacaoService = async(operacaoId: string | undefined): Promise<void> => {
-    const match = operacaoId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(operacaoId);
 
     if (!idParam) {
         throw new Error("ID não fornecido");
@@ -97,8 +96,7 @@ export const excluirOperacaoService = async(operacaoId: string | undefined): Pro
 }
 
 export const alterarStatusOperacaoService = async(operacaoId: string | undefined, body: any): Promise<OperacaoModel> => {
-    const match = operacaoId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(operacaoId);
 
     if (!idParam) {
         throw new Error("ID não fornecido");
@@ -117,8 +115,7 @@ export const alterarStatusOperacaoService = async(operacaoId: string | undefined
 }
 
 export const editarOperacaoService = async(operacaoId: string | undefined, chave: string, novoValor: string) => {
-    const match = operacaoId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(operacaoId);
 
     if (!idParam) {
         throw new Error("ID não fornecido");

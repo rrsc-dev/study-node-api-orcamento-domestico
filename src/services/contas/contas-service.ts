@@ -1,6 +1,7 @@
 import { getTodasContas, cadastrarConta, editarContaRepository, excluirContaRepository, desativarContaRepository, atualizarSaldoRepository, getDetalhesConta } from "../../repositories/contas/contas-repository";
 import { ContaModel } from "../../models/conta-model";
 import { getContaById } from "../../repositories/contas/contas-repository";
+import { getIdParamsMatch } from "../../utils/params-regex";
 
 export const getTodasContasService = async (): Promise<ContaModel[]> => {
     const data = await getTodasContas();
@@ -18,8 +19,7 @@ export const cadastrarContaService = async (conta: ContaModel): Promise<ContaMod
 };
 
 export const editarContaService = async (contaId: string | undefined, body: any): Promise<ContaModel> => {
-    const match = contaId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(contaId);
 
     if (!idParam) {
         throw new Error("ID não fornecido na URL");
@@ -32,8 +32,7 @@ export const editarContaService = async (contaId: string | undefined, body: any)
 }
 
 export const getContaByIdService = async (contaId: string | undefined): Promise<ContaModel> => {
-    const match = contaId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(contaId);
 
     if (!idParam) {
         throw new Error("ID não fornecido na URL");
@@ -55,8 +54,7 @@ export const getContaByIdService = async (contaId: string | undefined): Promise<
 }
 
 export const getDetalhesContaService = async (contaId: string | undefined): Promise<ContaModel> => {
-    const match = contaId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(contaId);
 
     if (!idParam) {
         throw new Error("ID não fornecido na URL");
@@ -78,8 +76,7 @@ export const getDetalhesContaService = async (contaId: string | undefined): Prom
 }
 
 export const excluirContaService = async (contaId: string | undefined): Promise<void> => {
-    const match = contaId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(contaId);
 
     if (!idParam) {
         throw new Error("ID não fornecido na URL");
@@ -91,8 +88,7 @@ export const excluirContaService = async (contaId: string | undefined): Promise<
 }
 
 export const desativarContaService = async (contaId: string | undefined): Promise<ContaModel> => {
-    const match = contaId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(contaId);
 
     if (!idParam) {
         throw new Error("ID não fornecido na URL");
@@ -106,8 +102,7 @@ export const desativarContaService = async (contaId: string | undefined): Promis
 }
 
 export const atualizarSaldoService = async (contaId: string | undefined, body: any): Promise<ContaModel> => {
-    const match = contaId?.match(/[?&]id=(\d+)/);
-    const idParam = match ? match[1] : null;
+    const idParam = getIdParamsMatch(contaId);
 
     if (!idParam) {
         throw new Error("ID não fornecido na URL");
