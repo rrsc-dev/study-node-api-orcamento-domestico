@@ -1,5 +1,5 @@
 import { ContaModel } from "../../models/conta-model";
-import { OperacaoModel } from "../../models/operacao-model";
+import { OperacaoModel, TipoOperacao } from "../../models/operacao-model";
 import { atualizarSaldoRepository, getContaById } from "../../repositories/contas/contas-repository";
 import { alterarStatusOperacao, cadastrarOperacao, editarOperacao, excluirOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
 
@@ -9,12 +9,12 @@ export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise
     }
 
     const novaOperacao = await cadastrarOperacao(operacao);
+    
     console.log(novaOperacao);
+
     if (novaOperacao) {
-        // Pegar o id da conta
         const idConta = novaOperacao.conta_id;
 
-        // Buscar conta
         const conta: ContaModel = await getContaById(idConta);
 
         if(conta) {
@@ -23,17 +23,13 @@ export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise
             const saldoAtual = Number(conta.saldo) || 0;
             const valorOperacao = Number(novaOperacao.valor);
 
-            // verificar tipo de operação
-            if (novaOperacao.tipo === 1) {
-                // Receita
+            if (novaOperacao.tipo === TipoOperacao.RECEITA) {
                 const novoSaldo: number = saldoAtual + valorOperacao;
 
                 await atualizarSaldoRepository(idConta, novoSaldo);
 
                 return novaOperacao;
-            } else if (novaOperacao.tipo === 2) {
-                // Despesa
-                //verifica saldo
+            } else if (novaOperacao.tipo === TipoOperacao.DESPESA) {
                 if (conta.saldo <= 0) {
                     return novaOperacao;
                 } else{
