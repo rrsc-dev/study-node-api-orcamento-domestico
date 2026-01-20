@@ -35,6 +35,7 @@ export const alterarStatusOperacao = async (id: number, status: number): Promise
 }
 
 export const cadastrarOperacao = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
+
     const query = `INSERT INTO operacoes (tipo, data, valor, conta_id, status, categoria_id, subcategoria_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
 
     const values = [operacao.tipo, operacao.data, operacao.valor, operacao.conta_id, operacao.status, operacao.categoria_id, operacao.subcategoria_id];

@@ -1,23 +1,62 @@
 import { ContaModel } from "../../models/conta-model";
 import { OperacaoModel, TipoOperacao } from "../../models/operacao-model";
 import { atualizarSaldoRepository, getContaById } from "../../repositories/contas/contas-repository";
-import { alterarStatusOperacao, cadastrarOperacao, editarOperacao, excluirOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
+import { alterarStatusOperacao, cadastrarOperacao, excluirOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
 import { getIdParamsMatch } from "../../utils/params-regex";
+
+const processaReceita = async (operacao: OperacaoModel, conta: ContaModel): Promise<any> => {
+
+}
+
+const processaDespesa = async (operacao: OperacaoModel, conta: ContaModel): Promise<any> => {
+
+}
 
 export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
     if (!operacao.tipo && !operacao.valor) {
-        throw new Error("Dados não cadastrados");
+        throw new Error("Tipo e/ou valor não cadastrados");
+    }
+
+    const idConta = operacao.conta_id;
+    const conta: ContaModel = await getContaById(idConta);
+
+    if (!conta) {
+        throw new Error("Conta não encontrada");
+    }
+
+    const idContaDestino = operacao.conta_destino_id;
+    const contaDestino: ContaModel = await getContaById(idContaDestino!);
+
+    if (operacao.tipo === TipoOperacao.TRANSFERENCIA) {
+        if (!contaDestino) {
+            throw new Error("Conta destino não encontrada");
+        }
+    }
+
+    if ((operacao.tipo === TipoOperacao.DESPESA || operacao.tipo === TipoOperacao.TRANSFERENCIA) && conta.saldo <= 0) {
+        throw new Error("Conta sem saldo para realizar operação");
     }
 
     const novaOperacao = await cadastrarOperacao(operacao);
-    
+
     console.log(novaOperacao);
 
     if (novaOperacao) {
+        let contaDestinoId = null;
+        let contaDestino: ContaModel;
+
+        if (novaOperacao.tipo === TipoOperacao.TRANSFERENCIA) {
+            contaDestinoId = novaOperacao.conta_destino_id;
+
+            if (contaDestinoId) {
+                contaDestino = await getContaById(contaDestinoId);
+            }
+        }
+
         const idConta = novaOperacao.conta_id;
 
         const conta: ContaModel = await getContaById(idConta);
-
+        
         if(conta) {
             console.log('conta encontrada');
 
@@ -114,20 +153,20 @@ export const alterarStatusOperacaoService = async(operacaoId: string | undefined
     return data;
 }
 
-export const editarOperacaoService = async(operacaoId: string | undefined, chave: string, novoValor: string) => {
-    const idParam = getIdParamsMatch(operacaoId);
+// export const editarOperacaoService = async(operacaoId: string | undefined, chave: string, novoValor: string) => {
+//     const idParam = getIdParamsMatch(operacaoId);
 
-    if (!idParam) {
-        throw new Error("ID não fornecido");
-    }
+//     if (!idParam) {
+//         throw new Error("ID não fornecido");
+//     }
 
-    const id = parseInt(idParam,10);
+//     const id = parseInt(idParam,10);
 
-    if (isNaN(id)) {
-        throw new Error("ID inválido");
-    }
+//     if (isNaN(id)) {
+//         throw new Error("ID inválido");
+//     }
 
-    const operacaoAtualizada = await editarOperacao(id, chave, novoValor);
+//     const operacaoAtualizada = await editarOperacao(id, chave, novoValor);
 
-    return operacaoAtualizada;
-}
+//     return operacaoAtualizada;
+// }
