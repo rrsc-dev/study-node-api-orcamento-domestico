@@ -66,3 +66,12 @@ ADD CONSTRAINT fk_operacoes_subcategoria
     REFERENCES subcategorias (id)
     ON UPDATE CASCADE
     ON DELETE SET NULL;
+
+ALTER TABLE operacoes
+ADD COLUMN conta_destino_id INT
+
+ALTER TABLE operacoes
+ADD COLUMN descricao VARCHAR(255)
+
+ALTER TABLE operacoes
+ADD COLUMN local VARCHAR(255)

@@ -2,6 +2,8 @@ export interface OperacaoModel {
     id: number;
     tipo: number;
     data: string;
+    descricao?: string;
+    local?: string;
     valor: number;
     conta_id: number;
     conta_destino_id?: number;
