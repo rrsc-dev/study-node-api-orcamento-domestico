@@ -4,12 +4,20 @@ import { atualizarSaldoRepository, getContaById } from "../../repositories/conta
 import { alterarStatusOperacao, cadastrarOperacao, excluirOperacao, getOperacaoById, getTodasOperacoes } from "../../repositories/operacoes/operacoes-repository";
 import { getIdParamsMatch } from "../../utils/params-regex";
 
-const processaReceita = async (operacao: OperacaoModel, conta: ContaModel): Promise<any> => {
+const processaReceita = async (operacao: OperacaoModel, conta: ContaModel): Promise<number> => {
+    const saldoAtual = Number(conta.saldo) || 0;
+    const valorOperacao = Number(operacao.valor);
+    const novoSaldo: number = saldoAtual + valorOperacao;
 
+    return novoSaldo;
 }
 
-const processaDespesa = async (operacao: OperacaoModel, conta: ContaModel): Promise<any> => {
+const processaDespesa = async (operacao: OperacaoModel, conta: ContaModel): Promise<number> => {
+    const saldoAtual = Number(conta.saldo) || 0;
+    const valorOperacao = Number(operacao.valor);
+    const novoSaldo: number = saldoAtual - valorOperacao;
 
+    return novoSaldo;
 }
 
 export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise<OperacaoModel> => {
@@ -39,55 +47,27 @@ export const cadastrarOperacaoService = async (operacao: OperacaoModel): Promise
 
     const novaOperacao = await cadastrarOperacao(operacao);
 
-    console.log(novaOperacao);
-
     if (novaOperacao) {
-        let contaDestinoId = null;
-        let contaDestino: ContaModel;
+        if (operacao.tipo === TipoOperacao.RECEITA) {
+            const novoSaldo = await processaReceita(novaOperacao, conta);
 
-        if (novaOperacao.tipo === TipoOperacao.TRANSFERENCIA) {
-            contaDestinoId = novaOperacao.conta_destino_id;
+            await atualizarSaldoRepository(idConta, novoSaldo);
+        } else if (operacao.tipo === TipoOperacao.DESPESA) {
+            const novoSaldo = await processaDespesa(novaOperacao, conta);
+            
+            await atualizarSaldoRepository(idConta, novoSaldo);
+        } else if (operacao.tipo === TipoOperacao.TRANSFERENCIA) {
+            const novoSaldoConta = await processaDespesa(novaOperacao, conta);
 
-            if (contaDestinoId) {
-                contaDestino = await getContaById(contaDestinoId);
-            }
-        }
+            await atualizarSaldoRepository(idConta, novoSaldoConta);
 
-        const idConta = novaOperacao.conta_id;
+            const novoSaldoContaDestino = await processaReceita(novaOperacao, contaDestino);
 
-        const conta: ContaModel = await getContaById(idConta);
-        
-        if(conta) {
-            console.log('conta encontrada');
-
-            const saldoAtual = Number(conta.saldo) || 0;
-            const valorOperacao = Number(novaOperacao.valor);
-
-            if (novaOperacao.tipo === TipoOperacao.RECEITA) {
-                const novoSaldo: number = saldoAtual + valorOperacao;
-
-                await atualizarSaldoRepository(idConta, novoSaldo);
-
-                return novaOperacao;
-            } else if (novaOperacao.tipo === TipoOperacao.DESPESA) {
-                if (conta.saldo <= 0) {
-                    return novaOperacao;
-                } else{
-                    const novoSaldo: number = saldoAtual - valorOperacao;
-
-                    await atualizarSaldoRepository(idConta, novoSaldo);
-
-                    return novaOperacao;
-                }
-            } else {
-                console.log('tipo de operação não reconhecidos');
-            }
-        } else {
-            await excluirOperacao(novaOperacao.id);
+            await atualizarSaldoRepository(idContaDestino!, novoSaldoContaDestino);
         }
     }
 
-    return novaOperacao;
+    return novaOperacao;    
 }
 
 export const getTodasOperacoesService = async (): Promise<OperacaoModel[]> => {
