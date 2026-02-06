@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "tsx --env-file=.env src/server.ts",
+    "db:seed": "tsx --env-file=.env src/seed.ts",
     "start:watch": "tsx watch --env-file=.env src/server.ts",
     "dist": "tsup src",
     "start:dist": "npm run dist && -env-file=.env node/server.js"

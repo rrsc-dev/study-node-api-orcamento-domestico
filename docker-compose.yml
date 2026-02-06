@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  # Serviço da Aplicação Node.js
+  app:
+    build: .
+    container_name: orcamento_app
+    ports:
+      - "3333:3333"
+    environment:
+      - DB_HOST=db # <--- AQUI É O PULO DO GATO (Nome do serviço abaixo)
+      - DB_PORT=5432
+      - DB_USER=docker
+      - DB_PASS=docker
+      - DB_NAME=orcamentodomestico
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  # Serviço do Banco de Dados
+  db:
+    image: postgres:alpine
+    container_name: orcamento_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=orcamentodomestico
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
